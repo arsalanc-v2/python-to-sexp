@@ -157,30 +157,23 @@ def expr_as_sx (expr):
       res += " (kwargs "+expr_as_sx(expr.kwargs)+")"
     res += ")"
 
-  # Num(object n):
-  elif type(expr) is ast.Num:
-    if type(expr.n) == complex:
-      res += "(Num "+str(expr.n.real)+"+"+str(expr.n.imag)+"i)"
-    else:
-      res += "(Num "+str(expr.n)+")"
-
-  # Str(string s):
-  elif type(expr) is ast.Str:
-    s = racket_escape(expr.s)
-    res += "(Str \"" +s+"\")"
-
-  # Bytes(bytes s)
-  elif type(expr) is ast.Bytes:
-    bs = racket_escape(expr.s)
-    res += "(Bytes #\""+str(bs)+"\")"
-
-  # NameConstant(singleton value):
-  elif type(expr) is ast.NameConstant:
-    res += "(NameConstant "+str(expr.value)+")"
-
-  # Ellipsis:
-  elif type(expr) is ast.Ellipsis:
-    res += "(Ellipsis)"
+  elif type(expr) is ast.Constant:
+   res += "(Constant "
+   if isinstance(expr.value, str):
+     res += '"' + expr.value + '"'
+   elif isinstance(expr.value, bytes):
+     res += '#"' + expr.value.decode('utf-8') + '"'
+   elif isinstance(expr.value, complex):
+     res += str(expr.value.real) + "+" + str(expr.value.imag) + "i"
+   elif isinstance(expr.value, (int, float)):
+     res += str(expr.value)
+   elif expr.value in {True, False}:
+     res += str(expr.value)
+   elif expr.value is Ellipsis:
+     res += str(expr.value)
+   else:
+     res += str(expr.value)
+   res += ")"
 
   # Attribute(expr value, identifier attr, expr_context ctx):
   elif type(expr) is ast.Attribute:
