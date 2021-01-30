@@ -160,9 +160,9 @@ def expr_as_sx (expr):
   elif type(expr) is ast.Constant:
    res += "(Constant "
    if isinstance(expr.value, str):
-     res += '"' + expr.value + '"'
+      res +=  "\""+expr.value+"\""
    elif isinstance(expr.value, bytes):
-     res += '#"' + expr.value.decode('utf-8') + '"'
+      res += "#\""+expr.value.decode('utf-8')+"\"" 
    elif isinstance(expr.value, complex):
      res += str(expr.value.real) + "+" + str(expr.value.imag) + "i"
    elif isinstance(expr.value, (int, float)):
